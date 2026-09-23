@@ -21,11 +21,11 @@ test('essenciais pagos e pagamentos confirmados reduzem disponível',()=>{
   const r=totals({
     debts:[{id:'d1',originalCents:100000}],
     incomes:[{amountCents:300000,status:'received'}],
-    expenses:[{amountCents:50000,status:'paid'}],
+    expenses:[{amountCents:50000,status:'paid'},{amountCents:40000,status:'reserved'}],
     payments:[{debtId:'d1',amountCents:20000,status:'confirmed'}],
     reserveCents:30000
   });
   assert.equal(r.available,230000);
-  assert.equal(r.plannable,200000);
+  assert.equal(r.plannable,160000);
   assert.equal(r.currentDebt,80000);
 });
