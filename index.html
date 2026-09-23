@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#0D1117" />
+  <meta name="description" content="Sair das Dívidas — organização simples de dívidas, renda e pagamentos." />
+  <title>Sair das Dívidas</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app" class="app-shell">
+    <aside class="sidebar" aria-label="Navegação principal">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">SD</div>
+        <div>
+          <strong>Sair das Dívidas</strong>
+          <span>controle sem complicação</span>
+        </div>
+      </div>
+      <nav class="nav-list">
+        <button class="nav-item active" data-view="dashboard"><span>⌂</span> Início</button>
+        <button class="nav-item" data-view="debts"><span>◫</span> Dívidas</button>
+        <button class="nav-item" data-view="planning"><span>◎</span> Planejamento</button>
+        <button class="nav-item" data-view="income"><span>＋</span> Renda</button>
+        <button class="nav-item" data-view="expenses"><span>−</span> Essenciais</button>
+        <button class="nav-item" data-view="backup"><span>⇄</span> Backup</button>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="storage-status" id="storageStatus">Banco local: ativo</div>
+        <small>Dados salvos neste navegador</small>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow" id="periodLabel"></p>
+          <h1 id="pageTitle">Visão geral</h1>
+        </div>
+        <div class="top-actions">
+          <button class="btn btn-secondary" id="quickIncome">+ Renda</button>
+          <button class="btn btn-primary" id="quickPayment">Registrar pagamento</button>
+        </div>
+      </header>
+
+      <section id="view-dashboard" class="view active" aria-labelledby="pageTitle">
+        <div class="hero-grid">
+          <article class="hero-card priority-card">
+            <div class="card-kicker">Sua prioridade agora</div>
+            <h2 id="priorityTitle">Cartão de crédito</h2>
+            <div class="money-xl" id="priorityAmount">R$ 0,00</div>
+            <p id="priorityMeta">Cadastre a fatura atual para começar.</p>
+            <div class="inline-actions">
+              <button class="btn btn-primary" id="priorityPay">Registrar pagamento</button>
+              <button class="btn btn-ghost" data-jump="planning">Planejar</button>
+            </div>
+          </article>
+
+          <article class="hero-card balance-card">
+            <div class="card-kicker">Dinheiro realmente disponível</div>
+            <div class="money-xl" id="availableAmount">R$ 0,00</div>
+            <p>Renda recebida − despesas essenciais pagas − pagamentos confirmados.</p>
+            <div class="balance-breakdown">
+              <span>Planejável</span><strong id="plannableAmount">R$ 0,00</strong>
+            </div>
+          </article>
+        </div>
+
+        <div class="metric-grid" id="metricGrid"></div>
+
+        <div class="content-grid">
+          <article class="panel">
+            <div class="panel-head">
+              <div><span class="card-kicker">Próximos passos</span><h3>Pagamentos a acompanhar</h3></div>
+              <button class="link-btn" data-jump="debts">Ver dívidas</button>
+            </div>
+            <div id="upcomingList" class="stack-list"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head">
+              <div><span class="card-kicker">Evolução</span><h3>Redução da dívida</h3></div>
+            </div>
+            <div id="progressPanel"></div>
+          </article>
+        </div>
+      </section>
+
+      <section id="view-debts" class="view">
+        <div class="section-toolbar">
+          <div class="segmented" id="debtFilters">
+            <button class="seg active" data-filter="active">Ativas</button>
+            <button class="seg" data-filter="card">Cartão</button>
+            <button class="seg" data-filter="all">Todas</button>
+            <button class="seg" data-filter="paid">Quitadas</button>
+          </div>
+          <button class="btn btn-primary" id="addDebtBtn">+ Nova dívida</button>
+        </div>
+        <div id="debtList" class="debt-list"></div>
+      </section>
+
+      <section id="view-planning" class="view">
+        <article class="panel planner-panel">
+          <div class="panel-head">
+            <div><span class="card-kicker">Planejamento mensal</span><h3>Planeje sem mexer nos saldos reais</h3></div>
+          </div>
+          <div class="planner-summary" id="plannerSummary"></div>
+          <div id="plannerDebtList" class="stack-list"></div>
+          <div class="planner-footer">
+            <div>
+              <span>Saldo previsto após o plano</span>
+              <strong id="plannedLeftover">R$ 0,00</strong>
+            </div>
+            <button class="btn btn-primary" id="savePlan">Salvar planejamento</button>
+          </div>
+        </article>
+      </section>
+
+      <section id="view-income" class="view">
+        <div class="section-toolbar">
+          <div><p class="helper">Somente rendas com status “Recebida” entram no dinheiro disponível.</p></div>
+          <button class="btn btn-primary" id="addIncomeBtn">+ Registrar renda</button>
+        </div>
+        <div id="incomeList" class="stack-list"></div>
+      </section>
+
+      <section id="view-expenses" class="view">
+        <div class="section-toolbar">
+          <div><p class="helper">Essenciais existem para proteger o dinheiro necessário antes de pagar dívidas.</p></div>
+          <button class="btn btn-primary" id="addExpenseBtn">+ Nova despesa</button>
+        </div>
+        <div id="expenseList" class="stack-list"></div>
+      </section>
+
+      <section id="view-backup" class="view">
+        <article class="panel backup-panel">
+          <span class="card-kicker">Segurança dos seus dados</span>
+          <h3>Backup e restauração</h3>
+          <p>O sistema usa banco local IndexedDB neste navegador. Exporte um backup periodicamente.</p>
+          <div class="backup-actions">
+            <button class="btn btn-primary" id="exportBackup">Exportar backup JSON</button>
+            <label class="btn btn-secondary file-btn">Importar backup<input type="file" id="importBackup" accept="application/json" hidden /></label>
+            <button class="btn btn-ghost danger" id="resetDemo">Limpar todos os dados</button>
+          </div>
+          <div class="info-box">
+            <strong>Banco em produção</strong>
+            <p>O projeto inclui um schema PostgreSQL/Supabase completo em <code>database/schema.sql</code>, com isolamento por usuário e histórico de alterações.</p>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <nav class="mobile-nav" aria-label="Navegação móvel">
+      <button class="mobile-nav-item active" data-view="dashboard">Início</button>
+      <button class="mobile-nav-item" data-view="debts">Dívidas</button>
+      <button class="mobile-nav-item" data-view="planning">Planejar</button>
+      <button class="mobile-nav-item" data-view="income">Renda</button>
+      <button class="mobile-nav-item" data-view="backup">Mais</button>
+    </nav>
+  </div>
+
+  <dialog id="modal" class="modal">
+    <form method="dialog" class="modal-card" id="modalForm">
+      <div class="modal-head">
+        <div><span class="card-kicker" id="modalKicker">Cadastro</span><h2 id="modalTitle">Adicionar</h2></div>
+        <button class="icon-btn" value="cancel" aria-label="Fechar">×</button>
+      </div>
+      <div id="modalFields" class="form-grid"></div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" value="cancel">Cancelar</button>
+        <button class="btn btn-primary" id="modalSubmit" value="default">Salvar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toastRegion" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
