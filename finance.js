@@ -14,15 +14,16 @@ export function debtBalance(debt, payments) {
 export function totals({ debts, payments, incomes, expenses, reserveCents = 0 }) {
   const received = incomes.filter(i=>i.status==='received').reduce((s,i)=>s+i.amountCents,0);
   const essentialPaid = expenses.filter(e=>e.status==='paid').reduce((s,e)=>s+e.amountCents,0);
+  const essentialReserved = expenses.filter(e=>e.status==='reserved').reduce((s,e)=>s+e.amountCents,0);
   const confirmedPayments = payments.filter(p=>p.status==='confirmed').reduce((s,p)=>s+p.amountCents,0);
   const originalDebt = debts.reduce((s,d)=>s+d.originalCents,0);
   const currentDebt = debts.reduce((s,d)=>s+debtBalance(d,payments),0);
   const available = received - essentialPaid - confirmedPayments;
   return {
-    received, essentialPaid, confirmedPayments, originalDebt, currentDebt,
+    received, essentialPaid, essentialReserved, confirmedPayments, originalDebt, currentDebt,
     paidDebt: originalDebt-currentDebt,
     available,
-    plannable: Math.max(0, available-reserveCents)
+    plannable: Math.max(0, available-essentialReserved-reserveCents)
   };
 }
 
